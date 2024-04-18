@@ -260,7 +260,38 @@ void push(cash* cash, int page) {
   }
 }
     
-
+void exchange(cash* cash, int page, int data) {
+  Linkedlist *list = NULL;
+  node *point = NULL;
+  node *tmp = NULL;
+  list = cash->list;
+  node = (list->array)[data]->point;
+  if (node = NULL) {
+    return;
+  }
+  if ( node == list->head) {
+    return;
+  }
+  if (node == list->tail) {
+    tmp = node->prev;
+    tmp->next = NULL;
+    list->tail = tmp;
+  }
+  else {
+    node->prev->next = node->next;
+    node->next->prev = node->prev;
+  
+  
+  
+  }
+  node->next = list->head;
+  list->head->prev = node;
+  list->head = node;
+  node->prev = NULL;
+  hash_delete(cash, cash->list->val);
+  hash_add(cash, page, cash->list->head) ;
+}
+    
 
 
 void init_value_in_list(Cash* Cash, int page) {
