@@ -34,7 +34,6 @@ struct Hash
 	int capacity;
 	hashnode **array;
 };
-
 struct cash
 {
 	LinkedList * list;
@@ -43,13 +42,38 @@ struct cash
 	int size_T;
 
 };
-
+//LIST
+node* create_node();
+LinkedList* List(int size);
+void list_free(LinkedList **list);
+void pushFront(LinkedList *list, int data);
+void *popBack(LinkedList *list);
+//HASH
+hashnode* create_node_h(int value, node *point);
+Hash* delete_from_hash(Hash *hash, int k);
+hashnode **init_array(int capacity);
+Hash* create_HASH_TABLE(int size_Table);
+void free_item(hashnode *node);
+void free_HASH(Hash *hash);
+int find_element_in_hash(Hash *hash, int page);
+int search_for_empty_place_in_hash(Hash *hash);
+void add_value_to_hash(int page, node *list, Hash *hash, int i);
+void hash_add(cash *cash, int page, node *list);
+void hash_delete(cash *cash, int page);
+//CASH
+cash* init_cash(int size_List, int size_Table);
+void free_cash(cash *CASH);
+void push(cash *cash, int page);
+void exchange(cash *cash, int page, int data);
+//
+int init_value_in_list(cash *Cash, int page);
 //LIST
 node* create_node()
 {
 	node *new_node = (node*) malloc(sizeof(node));
 	return new_node;
 }
+
 LinkedList* List(int size)
 {
 	LinkedList *list = NULL;
@@ -63,7 +87,6 @@ LinkedList* List(int size)
 	return list;
 
 }
-
 void list_free(LinkedList **list)
 {
 	node *tmp = (*list)->head;
@@ -130,6 +153,7 @@ void *popBack(LinkedList *list)
 	list->now_size--;
 	return tmp;
 }
+//HASH
 hashnode* create_node_h(int value, node *point)
 {
 	hashnode *tmp = NULL;
@@ -182,7 +206,6 @@ void free_item(hashnode *node)
 
 void free_HASH(Hash *hash)
 {
-	//Ð¾ÑÐ²Ð¾Ð±Ð¾Ð´Ð¸Ð»Ð¸ ÑÑÑ-ÑÐ°Ð±Ð»Ð¸ÑÑ
 	for (int i = 0; i < hash->capacity; i++)
 	{
 		hashnode *tmp = hash->array[i];
@@ -215,6 +238,7 @@ int find_element_in_hash(Hash *hash, int page)
 
 	return -1;
 }
+
 int search_for_empty_place_in_hash(Hash *hash)
 {
 	int i = 0;
@@ -227,11 +251,10 @@ int search_for_empty_place_in_hash(Hash *hash)
 		}
 	}
 }
-
 void add_value_to_hash(int page, node *list, Hash *hash, int i)
 {
 	(hash->array)[i] = create_node_h(page, list);
-	//ÑÐ±ÑÐ°Ð»Ð° hashnode *
+	
 }
 
 void hash_add(cash *cash, int page, node *list)
@@ -245,31 +268,34 @@ void hash_delete(cash *cash, int page)
 	int data = find_element_in_hash(cash->table, page);
 	delete_from_hash(cash->table, data);
 }
+
+//CASH
+
 cash* init_cash(int size_List, int size_Table)
 {
 	cash *o_cash = NULL;
 	o_cash = (cash*)(malloc(sizeof(cash)));
 	o_cash->size_L = size_List;
 	o_cash->size_T = size_Table;
-	o_cash->list = init_list(o_cash->size_L);
-	o_cash->table = init_list(o_cash->size_T);
+	o_cash->list = List(o_cash->size_L);
+	o_cash->table = create_HASH_TABLE(o_cash->size_T);
 	return o_cash;
 
 }
-
 void free_cash(cash *CASH)
 {
-	free_list(CASH->list);
-	free_table(CASH->table);
+	list_free(&(CASH->list));
+	free_HASH(CASH->table);
 	CASH->size_L = 0;
 	CASH->size_T = 0;
 	free(CASH);
 	CASH = NULL;
 }
+
 void push(cash *cash, int page)
 {
 	LinkedList *t = NULL;
-	t = cash->table;
+	t = cash->list;
 	assert(t->now_size <= t->size);
 	hash_delete(cash, page);	
 	if (t->now_size == t->size)
@@ -291,7 +317,6 @@ void exchange(cash *cash, int page, int data)
 
 	node *node = NULL;
 	list = cash->list;
-	node *tp = NULL;
 
 	node = (cash->table->array)[data]->point;
 	if (node == NULL)
@@ -306,9 +331,10 @@ void exchange(cash *cash, int page, int data)
 
 	if (node == list->tail)
 	{
-		tp = node->prev;
-		tp->next = NULL;
-		list->tail = tp;
+	        node *k = NULL;
+		k = node->prev;
+		k->next = NULL;
+		list->tail = k;
 	}
 	else
 	{
@@ -323,14 +349,15 @@ void exchange(cash *cash, int page, int data)
 	hash_delete(cash, (cash->table->array)[data]->value);
 	hash_add(cash, (cash->table->array)[data]->value, cash->list->head);
 }
-void init_value_in_list(cash *Cash, int page)
+
+int init_value_in_list(cash *Cash, int page)
 {
 	int data = 0;
 	int result = 0;
 	data = find_element_in_hash(Cash->table, page);	
 	if (data == -1)
 	{
-		Push(Cash, page);
+		push(Cash, page);
 	}
 	else
 	{
@@ -341,7 +368,11 @@ void init_value_in_list(cash *Cash, int page)
 	return result;
 
 }
-	
+
+
+
+
+
 
 
 
