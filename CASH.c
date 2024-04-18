@@ -34,6 +34,7 @@ struct Hash
 	int capacity;
 	hashnode **array;
 };
+
 struct cash
 {
 	LinkedList * list;
@@ -42,12 +43,13 @@ struct cash
 	int size_T;
 
 };
+
 //LIST
 node* create_node();
 LinkedList* List(int size);
 void list_free(LinkedList **list);
 void pushFront(LinkedList *list, int data);
-void *popBack(LinkedList *list);
+void popBack(LinkedList *list);
 //HASH
 hashnode* create_node_h(int value, node *point);
 Hash* delete_from_hash(Hash *hash, int k);
@@ -64,9 +66,11 @@ void hash_delete(cash *cash, int page);
 cash* init_cash(int size_List, int size_Table);
 void free_cash(cash *CASH);
 void push(cash *cash, int page);
-void exchange(cash *cash, int page, int data);
+void exchange(cash *cash, int data);
 //
 int init_value_in_list(cash *Cash, int page);
+int print(cash *cash, int *array, int size);
+
 //LIST
 node* create_node()
 {
@@ -77,7 +81,6 @@ node* create_node()
 LinkedList* List(int size)
 {
 	LinkedList *list = NULL;
-	node *tmp = NULL;
 	list = (LinkedList*) malloc((sizeof(LinkedList)));
 	list->size = size;
 	list->now_size = 0;
@@ -87,6 +90,7 @@ LinkedList* List(int size)
 	return list;
 
 }
+
 void list_free(LinkedList **list)
 {
 	node *tmp = (*list)->head;
@@ -101,6 +105,7 @@ void list_free(LinkedList **list)
 	free(*list);
 	(*list) = NULL;
 }
+
 void pushFront(LinkedList *list, int data)
 {
 	node *tmp = (node*) malloc(sizeof(node));
@@ -126,10 +131,10 @@ void pushFront(LinkedList *list, int data)
 
 	list->now_size++;
 }
-void *popBack(LinkedList *list)
+
+void popBack(LinkedList *list)
 {
 	node * next;
-	void *tmp;
 	if (list->tail == NULL)
 	{
 		exit(4);
@@ -147,13 +152,14 @@ void *popBack(LinkedList *list)
 		list->head = NULL;
 	}
 
-	tmp = next->val;
 	free(next);
 
 	list->now_size--;
-	return tmp;
+
 }
+
 //HASH
+
 hashnode* create_node_h(int value, node *point)
 {
 	hashnode *tmp = NULL;
@@ -174,7 +180,6 @@ Hash* delete_from_hash(Hash *hash, int k)
 
 hashnode **init_array(int capacity)
 {
-	int t = 0;
 	hashnode **array = NULL;
 	array = (hashnode **) malloc(capacity* sizeof(hashnode*));
 	for (int i = 0; i < capacity; i++)
@@ -185,6 +190,7 @@ hashnode **init_array(int capacity)
 	return array;
 
 }
+
 Hash* create_HASH_TABLE(int size_Table)
 {
 	hashnode **array = NULL;
@@ -219,11 +225,11 @@ void free_HASH(Hash *hash)
 	free(hash);
 
 }
+
 int find_element_in_hash(Hash *hash, int page)
 {
-	//Ð
+	//ÃÂ
 	int i = 0;
-	int k = -1;
 
 	for (i = 0; i < hash->capacity; i++)
 	{
@@ -250,11 +256,14 @@ int search_for_empty_place_in_hash(Hash *hash)
 			return i;
 		}
 	}
+
+	return i;
 }
+
 void add_value_to_hash(int page, node *list, Hash *hash, int i)
 {
 	(hash->array)[i] = create_node_h(page, list);
-	
+
 }
 
 void hash_add(cash *cash, int page, node *list)
@@ -282,6 +291,7 @@ cash* init_cash(int size_List, int size_Table)
 	return o_cash;
 
 }
+
 void free_cash(cash *CASH)
 {
 	list_free(&(CASH->list));
@@ -297,7 +307,7 @@ void push(cash *cash, int page)
 	LinkedList *t = NULL;
 	t = cash->list;
 	assert(t->now_size <= t->size);
-	hash_delete(cash, page);	
+
 	if (t->now_size == t->size)
 	{
 		hash_delete(cash, cash->list->tail->val);
@@ -311,15 +321,18 @@ void push(cash *cash, int page)
 		hash_add(cash, page, cash->list->head);
 	}
 }
-void exchange(cash *cash, int page, int data)
+
+void exchange(cash *cash, int data)
 {
+	int value = 0;
 	LinkedList *list = NULL;
-	 node *k = NULL;
+	node *k = NULL;
 
 	node *node = NULL;
 	list = cash->list;
 
 	node = (cash->table->array)[data]->point;
+	value = (cash->table->array)[data]->value;
 	if (node == NULL)
 	{
 		return;
@@ -346,35 +359,80 @@ void exchange(cash *cash, int page, int data)
 	list->head->prev = node;
 	list->head = node;
 	node->prev = NULL;
-	hash_delete(cash, (cash->table->array)[data]->value);
-	hash_add(cash, (cash->table->array)[data]->value, cash->list->head);
+	hash_delete(cash, value);
+	hash_add(cash, value, cash->list->head);
+
 }
 
 int init_value_in_list(cash *Cash, int page)
 {
 	int data = 0;
 	int result = 0;
-	data = find_element_in_hash(Cash->table, page);	
+	data = find_element_in_hash(Cash->table, page);
 	if (data == -1)
 	{
 		push(Cash, page);
 	}
 	else
 	{
-		exchange(Cash, page, data);
-		result += 1;
+		exchange(Cash, data);
+		result = 1;
 	}
 
 	return result;
 
 }
 
+void print_list(LinkedList *t)
+{
+	//print_list_for 
+	if (t)
+	{
+		node *tmp = NULL;
+		tmp = t->head;
+		while (tmp)
+		{
+			printf("%d", tmp->val);
+			tmp = tmp->next;
+		}
+	}
+}
 
+int main()
+{
+	int result = 0;
+	int data = 0;
+	int i = 0;
+	int a = 0;
+	int b = 0;
+	int *arr = NULL;
+	cash *cash = NULL;
+	scanf("%d", &a);
+	scanf("%d", &b);
+	cash = init_cash(a, b);
+	arr = (int*) malloc(b* sizeof(int));
+	for (i = 0; i < b; i++)
+	{
+		scanf("%d", &arr[i]);
+	}
 
+	result = print(cash, arr, b);
 
+	printf("%d", result);
+	free_cash(cash);
+	free(arr);
+	arr = NULL;
 
+}
 
+int print(cash *cash, int *array, int size)
+{
+	int i = 0;
+	int result = 0;
+	for (i = 0; i < size; i++)
+	{
+		result += init_value_in_list(cash, array[i]);
+	}
 
-
-
-
+	return result;
+}
