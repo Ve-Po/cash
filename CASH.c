@@ -314,6 +314,7 @@ void push(cash *cash, int page)
 void exchange(cash *cash, int page, int data)
 {
 	LinkedList *list = NULL;
+	 node *k = NULL;
 
 	node *node = NULL;
 	list = cash->list;
@@ -331,7 +332,6 @@ void exchange(cash *cash, int page, int data)
 
 	if (node == list->tail)
 	{
-	        node *k = NULL;
 		k = node->prev;
 		k->next = NULL;
 		list->tail = k;
