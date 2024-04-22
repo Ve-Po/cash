@@ -257,7 +257,7 @@ int search_for_empty_place_in_hash(Hash *hash)
 		}
 	}
 
-	return i;
+	return 0;
 }
 
 void add_value_to_hash(int page, node *list, Hash *hash, int i)
@@ -359,8 +359,6 @@ void exchange(cash *cash, int data)
 	list->head->prev = node;
 	list->head = node;
 	node->prev = NULL;
-	hash_delete(cash, value);
-	hash_add(cash, value, cash->list->head);
 
 }
 
